@@ -1,4 +1,16 @@
+Git Clone
+
+cd DOCKER_AWS
+
+npm install
+
+npm start
+
+---
+
 After Connecting to SSH Terminal
+
+---
 
 RUN
 sudo yum update -y (ensure all system packages up to date)
