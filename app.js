@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 app.get("/user", (req, res) => {
   var userData = [
     {
-      name: "Raju",
+      name: "Rajesh",
       age: 12,
     },
     { name: "Ramesh", age: 25 },

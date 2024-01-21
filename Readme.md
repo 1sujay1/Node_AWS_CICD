@@ -1,94 +1,51 @@
-Git Clone
+## Getting Started
 
-cd Node_AWS_CICD
+- STEP1 - Login to AWS console and create EC2 instance
+- STEP2 - Setup GitHub Repo and Push your project
+- STEP3 - Login to EC2 instance
+- STEP4 - Setup GitHub Action runner on EC2 instance
+- STEP5 - Create GitHub Secrets for managing environment variables
+- STEP6 - Create CI/CD Workflow using GitHub Action
+- STEP7 - Install nodejs and nginx on EC2 instance
 
-npm install
+```bash
+sudo apt update
 
-npm start
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 
----
+sudo apt-get install -y nodejs
 
-After Connecting to SSH Terminal
+sudo apt-get install -y nginx
+```
 
----
+- STEP8 - Install pm2
 
-RUN
+```bash
+sudo npm i -g pm2
+```
 
-To deploy a Node.js server on an EC2 instance, you can follow these general steps:
+- STEP9 - Config nginx and restart it
 
-Set up an EC2 instance:
+```bash
+cd /etc/nginx/sites-available
 
-Launch an EC2 instance on AWS.
-Choose an Amazon Machine Image (AMI) that suits your needs.
-Configure the security group to allow incoming traffic on the required ports (e.g., 80 for HTTP, 443 for HTTPS).
-Connect to your EC2 instance:
+sudo nano default
 
-Use SSH to connect to your EC2 instance. You'll need the private key associated with the key pair used when launching the instance.
+location /api {
+	rewrite ^\/api\/(.*)$ /api/$1 break;
+	proxy_pass  http://localhost:5000;
+	proxy_set_header Host $host;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
 
-## CMD:ssh -i your-key.pem ec2-user@your-instance-ip [OR] Connect by Putty
+sudo systemctl restart nginx
+```
 
-Install Node.js:
+- STEP10 - Run backend api in the background as a service using pm2
 
-Update the package lists:
+```bash
+pm2 start server.js --name=BackendAPI
+```
 
-## CMD: sudo yum update -y
-
-Install Node.js:
-
-## CMD: sudo yum install -y nodejs
-
-If your server stops when you close the PuTTY terminal, it indicates that the process you started (such as your Node.js application) is running in the foreground, and it terminates when the terminal session is closed.
-
-To keep your Node.js application running even after closing the PuTTY terminal, you can use tools like nohup or tmux. Here's how you can do it using nohup:
-
-Start your Node.js application with nohup:
-
-## CMD:nohup node your-app.js &
-
-The nohup command stands for "no hang up." It allows the command to continue running even after the terminal is closed. The & at the end runs the process in the background.
-
-Optionally, you can redirect the output to a file:
-
-## CMD: nohup node your-app.js > output.log 2>&1 &
-
-This way, you can review the output later if needed.
-
-To check if your application is still running:
-
-## CMD:ps aux | grep node
-
-You should see your Node.js process in the list.
-
-Stop the process using the kill command:
-
-## CMD: kill PID
-
-Replace PID with the actual process ID you obtained.
-
----
-
-Alternatively, you might consider using a process manager like pm2 for more advanced process control and monitoring. Here's a brief example:
-
----
-
-Install pm2 globally:
-
-## CMD: npm install -g pm2
-
-Start your Node.js application with pm2:
-
-## CMD: pm2 start your-app.js
-
-To list running processes:
-
-## CMD:pm2 list
-
-Your application should be listed, and it will continue running in the background even if you close the PuTTY terminal.
-
-Stop the application using the pm2 stop command:
-
-## CMD: pm2 stop app_name_or_id
-
-Replace app_name_or_id with the name or ID of your application as shown in the pm2 list output.
-
-Choose the method that best fits your needs and workflow.
+- STEP11 - Add the command in yml script of project to restart the nodejs api server after every push to the repo
