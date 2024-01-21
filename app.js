@@ -5,10 +5,26 @@ const mongoose = require("mongoose");
 const app = express();
 
 app.use(express.static("public"));
+
 app.get("/", (req, res) => {
   const filePath = path.join(__dirname, "views", "welcome.html");
   res.sendFile(filePath);
 });
+
+app.get("/user", (req, res) => {
+  var userData = [
+    {
+      name: "Raju",
+      age: 12,
+    },
+    { name: "Ramesh", age: 25 },
+  ];
+  res.json({
+    status: true,
+    data: userData,
+  });
+});
+
 const PORT = process.env.PORT || 6000;
 const DD_URL = process.env.DD_URL;
 mongoose
