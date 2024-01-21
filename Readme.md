@@ -1,6 +1,6 @@
 Git Clone
 
-cd DOCKER_AWS
+cd Node_AWS_CICD
 
 npm install
 
