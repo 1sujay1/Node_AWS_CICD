@@ -28,8 +28,14 @@ sudo npm i -g pm2
 
 ```bash
 cd /etc/nginx/sites-available
-
 sudo nano default
+
+if(path not found)
+Search for Nginx Configuration Files:
+
+sudo find /etc/nginx -type f -name '*.conf'
+
+sudo nano /etc/nginx/nginx.conf
 
 location /api {
 	rewrite ^\/api\/(.*)$ /api/$1 break;
@@ -39,8 +45,16 @@ location /api {
 	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 }
 
+Test the configuration and restart Nginx:
+
+sudo nginx -t
+
 sudo systemctl restart nginx
 ```
+
+Check Any port already running
+
+sudo lsof -i :80
 
 - STEP10 - Run backend api in the background as a service using pm2
 

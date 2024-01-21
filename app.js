@@ -15,7 +15,7 @@ app.get("/user", (req, res) => {
   var userData = [
     {
       name: "Rajesh",
-      age: 12,
+      age: 26,
     },
     { name: "Ramesh", age: 25 },
   ];
